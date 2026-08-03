@@ -95,4 +95,14 @@ describe("actionStyles", () => {
 
     expect(API.getSelectedElement().strokeStyle).toBe("animated");
   });
+
+  it("should apply the animated stroke style to a rectangle", () => {
+    UI.clickTool("rectangle");
+    mouse.down(10, 10);
+    mouse.up(120, 80);
+
+    fireEvent.click(screen.getByTitle("Animated"));
+
+    expect(API.getSelectedElement().strokeStyle).toBe("animated");
+  });
 });
