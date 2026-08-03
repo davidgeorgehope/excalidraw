@@ -85,4 +85,14 @@ describe("actionStyles", () => {
     expect(firstRect.roughness).toBe(2); // Cartoonist: 2
     expect(firstRect.opacity).toBe(60);
   });
+
+  it("should apply the animated stroke style to an arrow", () => {
+    UI.clickTool("arrow");
+    mouse.down(10, 10);
+    mouse.up(120, 10);
+
+    fireEvent.click(screen.getByTitle("Animated"));
+
+    expect(API.getSelectedElement().strokeStyle).toBe("animated");
+  });
 });
