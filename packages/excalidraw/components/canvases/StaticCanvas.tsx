@@ -55,8 +55,7 @@ const StaticCanvas = (props: StaticCanvasProps) => {
   const rendererProps = useRef(props);
   rendererProps.current = props;
   const hasAnimatedLinearElement = props.visibleElements.some(
-    (element) =>
-      isLinearElement(element) && element.strokeStyle === "animated",
+    (element) => isLinearElement(element) && element.strokeStyle === "animated",
   );
 
   useEffect(() => {

@@ -199,8 +199,7 @@ export const generateRoughOptions = (
   const options: Options = {
     seed: element.seed,
     strokeLineDash:
-      element.strokeStyle === "dashed" ||
-      element.strokeStyle === "animated"
+      element.strokeStyle === "dashed" || element.strokeStyle === "animated"
         ? getDashArrayDashed(element.strokeWidth)
         : element.strokeStyle === "dotted"
         ? getDashArrayDotted(element.strokeWidth)

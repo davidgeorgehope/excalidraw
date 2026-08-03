@@ -101,11 +101,7 @@ describe("export", () => {
       height: 20,
     });
 
-    const svg = await exportToSvg(
-      [animatedArrow],
-      getDefaultAppState(),
-      {},
-    );
+    const svg = await exportToSvg([animatedArrow], getDefaultAppState(), {});
 
     expect(svg.querySelector("animate")).toBeNull();
     expect(svg.outerHTML).toContain("stroke-dasharray");
