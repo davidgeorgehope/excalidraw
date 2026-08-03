@@ -346,7 +346,7 @@ const drawElementOnCanvas = (
             !renderConfig.isExporting &&
             shape.options.strokeLineDash
           ) {
-            shape.options.strokeLineDashOffset = performance.now() / 40;
+            shape.options.strokeLineDashOffset = -performance.now() / 40;
           }
           rc.draw(shape);
           if (previousDashOffset === undefined) {
