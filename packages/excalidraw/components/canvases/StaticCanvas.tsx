@@ -11,7 +11,6 @@ import type {
 
 import { isRenderThrottlingEnabled } from "../../reactUtils";
 import { renderStaticScene } from "../../renderer/staticScene";
-import { AnimationController } from "../../renderer/animation";
 
 import type {
   RenderableElementsMap,
@@ -33,20 +32,6 @@ type StaticCanvasProps = {
   renderConfig: StaticCanvasRenderConfig;
 };
 
-let staticCanvasAnimationId = 0;
-const staticCanvasAnimationKeys = new WeakMap<HTMLCanvasElement, string>();
-
-const getAnimationKey = (canvas: HTMLCanvasElement) => {
-  const existingKey = staticCanvasAnimationKeys.get(canvas);
-  if (existingKey) {
-    return existingKey;
-  }
-
-  const key = `animateStaticScene-${staticCanvasAnimationId++}`;
-  staticCanvasAnimationKeys.set(canvas, key);
-  return key;
-};
-
 const renderScene = (props: StaticCanvasProps) => {
   renderStaticScene(
     {
@@ -66,7 +51,6 @@ const renderScene = (props: StaticCanvasProps) => {
 const StaticCanvas = (props: StaticCanvasProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isComponentMounted = useRef(false);
-  const animationKey = getAnimationKey(props.canvas);
   const rendererProps = useRef(props);
   rendererProps.current = props;
   const hasAnimatedLinearElement = props.visibleElements.some(
@@ -100,17 +84,18 @@ const StaticCanvas = (props: StaticCanvasProps) => {
 
   useEffect(() => {
     if (!hasAnimatedLinearElement) {
-      AnimationController.cancel(animationKey);
       return;
     }
 
-    AnimationController.start(animationKey, () => {
+    let frameId: number;
+    const animate = () => {
       renderScene(rendererProps.current);
-      return {};
-    });
+      frameId = requestAnimationFrame(animate);
+    };
+    frameId = requestAnimationFrame(animate);
 
-    return () => AnimationController.cancel(animationKey);
-  }, [animationKey, hasAnimatedLinearElement]);
+    return () => cancelAnimationFrame(frameId);
+  }, [hasAnimatedLinearElement]);
 
   return <div className="excalidraw__canvas-wrapper" ref={wrapperRef} />;
 };
