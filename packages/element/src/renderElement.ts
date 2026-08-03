@@ -340,7 +340,20 @@ const drawElementOnCanvas = (
 
       ShapeCache.generateElementShape(element, renderConfig).forEach(
         (shape) => {
+          const previousDashOffset = shape.options.strokeLineDashOffset;
+          if (
+            element.strokeStyle === "animated" &&
+            !renderConfig.isExporting &&
+            shape.options.strokeLineDash
+          ) {
+            shape.options.strokeLineDashOffset = -performance.now() / 40;
+          }
           rc.draw(shape);
+          if (previousDashOffset === undefined) {
+            delete shape.options.strokeLineDashOffset;
+          } else {
+            shape.options.strokeLineDashOffset = previousDashOffset;
+          }
         },
       );
       break;
@@ -822,7 +835,10 @@ export const renderElement = (
     case "text":
     case "iframe":
     case "embeddable": {
-      if (renderConfig.isExporting) {
+      if (
+        renderConfig.isExporting ||
+        (isLinearElement(element) && element.strokeStyle === "animated")
+      ) {
         const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
         const centerX = (x1 + x2) / 2;
         const centerY = (y1 + y2) / 2;

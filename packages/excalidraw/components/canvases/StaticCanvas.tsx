@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useId, useRef } from "react";
 
 import { isShallowEqual } from "@excalidraw/common";
 
@@ -6,9 +6,11 @@ import type {
   NonDeletedExcalidrawElement,
   NonDeletedSceneElementsMap,
 } from "@excalidraw/element/types";
+import { isLinearElement } from "@excalidraw/element";
 
 import { isRenderThrottlingEnabled } from "../../reactUtils";
 import { renderStaticScene } from "../../renderer/staticScene";
+import { AnimationController } from "../../renderer/animation";
 
 import type {
   RenderableElementsMap,
@@ -30,9 +32,32 @@ type StaticCanvasProps = {
   renderConfig: StaticCanvasRenderConfig;
 };
 
+const renderScene = (props: StaticCanvasProps) => {
+  renderStaticScene(
+    {
+      canvas: props.canvas,
+      rc: props.rc,
+      scale: props.scale,
+      elementsMap: props.elementsMap,
+      allElementsMap: props.allElementsMap,
+      visibleElements: props.visibleElements,
+      appState: props.appState,
+      renderConfig: props.renderConfig,
+    },
+    isRenderThrottlingEnabled(),
+  );
+};
+
 const StaticCanvas = (props: StaticCanvasProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isComponentMounted = useRef(false);
+  const animationKey = `animateStaticScene-${useId()}`;
+  const rendererProps = useRef(props);
+  rendererProps.current = props;
+  const hasAnimatedLinearElement = props.visibleElements.some(
+    (element) =>
+      isLinearElement(element) && element.strokeStyle === "animated",
+  );
 
   useEffect(() => {
     props.canvas.style.width = `${props.appState.width}px`;
@@ -56,20 +81,22 @@ const StaticCanvas = (props: StaticCanvasProps) => {
       canvas.classList.add("excalidraw__canvas", "static");
     }
 
-    renderStaticScene(
-      {
-        canvas,
-        rc: props.rc,
-        scale: props.scale,
-        elementsMap: props.elementsMap,
-        allElementsMap: props.allElementsMap,
-        visibleElements: props.visibleElements,
-        appState: props.appState,
-        renderConfig: props.renderConfig,
-      },
-      isRenderThrottlingEnabled(),
-    );
+    renderScene(props);
   });
+
+  useEffect(() => {
+    if (!hasAnimatedLinearElement) {
+      AnimationController.cancel(animationKey);
+      return;
+    }
+
+    AnimationController.start(animationKey, () => {
+      renderScene(rendererProps.current);
+      return {};
+    });
+
+    return () => AnimationController.cancel(animationKey);
+  }, [animationKey, hasAnimatedLinearElement]);
 
   return <div className="excalidraw__canvas-wrapper" ref={wrapperRef} />;
 };
