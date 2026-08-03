@@ -1,6 +1,7 @@
-import React, { useEffect, useId, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { isShallowEqual } from "@excalidraw/common";
+
 import { isLinearElement } from "@excalidraw/element";
 import type {
   NonDeletedExcalidrawElement,
@@ -31,6 +32,20 @@ type StaticCanvasProps = {
   renderConfig: StaticCanvasRenderConfig;
 };
 
+let staticCanvasAnimationId = 0;
+const staticCanvasAnimationKeys = new WeakMap<HTMLCanvasElement, string>();
+
+const getAnimationKey = (canvas: HTMLCanvasElement) => {
+  const existingKey = staticCanvasAnimationKeys.get(canvas);
+  if (existingKey) {
+    return existingKey;
+  }
+
+  const key = `animateStaticScene-${staticCanvasAnimationId++}`;
+  staticCanvasAnimationKeys.set(canvas, key);
+  return key;
+};
+
 const renderScene = (props: StaticCanvasProps) => {
   renderStaticScene(
     {
@@ -50,7 +65,7 @@ const renderScene = (props: StaticCanvasProps) => {
 const StaticCanvas = (props: StaticCanvasProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isComponentMounted = useRef(false);
-  const animationKey = `animateStaticScene-${useId()}`;
+  const animationKey = getAnimationKey(props.canvas);
   const rendererProps = useRef(props);
   rendererProps.current = props;
   const hasAnimatedLinearElement = props.visibleElements.some(
