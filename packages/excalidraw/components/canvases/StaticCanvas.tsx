@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { isShallowEqual } from "@excalidraw/common";
 
 import { isLinearElement } from "@excalidraw/element";
+
 import type {
   NonDeletedExcalidrawElement,
   NonDeletedSceneElementsMap,
