@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import { isShallowEqual } from "@excalidraw/common";
 
-import { isLinearElement } from "@excalidraw/element";
+import { hasStrokeStyle } from "@excalidraw/element";
 
 import type {
   NonDeletedExcalidrawElement,
@@ -53,8 +53,9 @@ const StaticCanvas = (props: StaticCanvasProps) => {
   const isComponentMounted = useRef(false);
   const rendererProps = useRef(props);
   rendererProps.current = props;
-  const hasAnimatedLinearElement = props.visibleElements.some(
-    (element) => isLinearElement(element) && element.strokeStyle === "animated",
+  const hasAnimatedStroke = props.visibleElements.some(
+    (element) =>
+      hasStrokeStyle(element.type) && element.strokeStyle === "animated",
   );
 
   useEffect(() => {
@@ -83,7 +84,7 @@ const StaticCanvas = (props: StaticCanvasProps) => {
   });
 
   useEffect(() => {
-    if (!hasAnimatedLinearElement) {
+    if (!hasAnimatedStroke) {
       return;
     }
 
@@ -95,7 +96,7 @@ const StaticCanvas = (props: StaticCanvasProps) => {
     frameId = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(frameId);
-  }, [hasAnimatedLinearElement]);
+  }, [hasAnimatedStroke]);
 
   return <div className="excalidraw__canvas-wrapper" ref={wrapperRef} />;
 };
