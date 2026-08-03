@@ -93,20 +93,6 @@ describe("export", () => {
     expect(svgText).toMatchSnapshot(`svg-embdedded scene export output`);
   });
 
-  it("exports animated strokes as static dashed strokes", async () => {
-    const animatedArrow = API.createElement({
-      type: "arrow",
-      strokeStyle: "animated",
-      width: 100,
-      height: 20,
-    });
-
-    const svg = await exportToSvg([animatedArrow], getDefaultAppState(), {});
-
-    expect(svg.querySelector("animate")).toBeNull();
-    expect(svg.outerHTML).toContain("stroke-dasharray");
-  });
-
   it("import embedded png (legacy v1)", async () => {
     await API.drop([
       {
@@ -231,5 +217,19 @@ describe("export", () => {
     // in case of regressions, save the SVG to a file and visually compare to:
     // src/tests/fixtures/svg-image-exporting-reference.svg
     expect(svgText).toMatchSnapshot(`svg export output`);
+  });
+
+  it("exports animated strokes as static dashed strokes", async () => {
+    const animatedArrow = API.createElement({
+      type: "arrow",
+      strokeStyle: "animated",
+      width: 100,
+      height: 20,
+    });
+
+    const svg = await exportToSvg([animatedArrow], getDefaultAppState(), {});
+
+    expect(svg.querySelector("animate")).toBeNull();
+    expect(svg.outerHTML).toContain("stroke-dasharray");
   });
 });
