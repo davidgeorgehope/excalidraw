@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 
 import { isShallowEqual } from "@excalidraw/common";
 
+import { hasStrokeStyle } from "@excalidraw/element";
+
 import type {
   NonDeletedExcalidrawElement,
   NonDeletedSceneElementsMap,
@@ -30,9 +32,31 @@ type StaticCanvasProps = {
   renderConfig: StaticCanvasRenderConfig;
 };
 
+const renderScene = (props: StaticCanvasProps) => {
+  renderStaticScene(
+    {
+      canvas: props.canvas,
+      rc: props.rc,
+      scale: props.scale,
+      elementsMap: props.elementsMap,
+      allElementsMap: props.allElementsMap,
+      visibleElements: props.visibleElements,
+      appState: props.appState,
+      renderConfig: props.renderConfig,
+    },
+    isRenderThrottlingEnabled(),
+  );
+};
+
 const StaticCanvas = (props: StaticCanvasProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isComponentMounted = useRef(false);
+  const rendererProps = useRef(props);
+  rendererProps.current = props;
+  const hasAnimatedStroke = props.visibleElements.some(
+    (element) =>
+      hasStrokeStyle(element.type) && element.strokeStyle === "animated",
+  );
 
   useEffect(() => {
     props.canvas.style.width = `${props.appState.width}px`;
@@ -56,20 +80,23 @@ const StaticCanvas = (props: StaticCanvasProps) => {
       canvas.classList.add("excalidraw__canvas", "static");
     }
 
-    renderStaticScene(
-      {
-        canvas,
-        rc: props.rc,
-        scale: props.scale,
-        elementsMap: props.elementsMap,
-        allElementsMap: props.allElementsMap,
-        visibleElements: props.visibleElements,
-        appState: props.appState,
-        renderConfig: props.renderConfig,
-      },
-      isRenderThrottlingEnabled(),
-    );
+    renderScene(props);
   });
+
+  useEffect(() => {
+    if (!hasAnimatedStroke) {
+      return;
+    }
+
+    let frameId: number;
+    const animate = () => {
+      renderScene(rendererProps.current);
+      frameId = requestAnimationFrame(animate);
+    };
+    frameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [hasAnimatedStroke]);
 
   return <div className="excalidraw__canvas-wrapper" ref={wrapperRef} />;
 };

@@ -34,6 +34,7 @@
     "strokeStyle_solid": "Solid",
     "strokeStyle_dashed": "Dashed",
     "strokeStyle_dotted": "Dotted",
+    "strokeStyle_animated": "Animated",
     "sloppiness": "Sloppiness",
     "pressure": "Pressure",
     "pressure_constant": "Constant",

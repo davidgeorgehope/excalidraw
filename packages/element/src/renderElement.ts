@@ -82,6 +82,7 @@ import type {
 } from "./types";
 
 import type { RoughCanvas } from "roughjs/bin/canvas";
+import type { Drawable } from "roughjs/bin/core";
 
 const isPendingImageElement = (
   element: ExcalidrawElement,
@@ -315,6 +316,28 @@ const drawImagePlaceholder = (
   );
 };
 
+const drawShape = (
+  shape: Drawable,
+  element: NonDeletedExcalidrawElement,
+  rc: RoughCanvas,
+  renderConfig: StaticCanvasRenderConfig,
+) => {
+  const previousDashOffset = shape.options.strokeLineDashOffset;
+  if (
+    element.strokeStyle === "animated" &&
+    !renderConfig.isExporting &&
+    shape.options.strokeLineDash
+  ) {
+    shape.options.strokeLineDashOffset = -performance.now() / 40;
+  }
+  rc.draw(shape);
+  if (previousDashOffset === undefined) {
+    delete shape.options.strokeLineDashOffset;
+  } else {
+    shape.options.strokeLineDashOffset = previousDashOffset;
+  }
+};
+
 const drawElementOnCanvas = (
   element: NonDeletedExcalidrawElement,
   rc: RoughCanvas,
@@ -330,7 +353,12 @@ const drawElementOnCanvas = (
       context.lineJoin = "round";
       context.lineCap = "round";
 
-      rc.draw(ShapeCache.generateElementShape(element, renderConfig));
+      drawShape(
+        ShapeCache.generateElementShape(element, renderConfig),
+        element,
+        rc,
+        renderConfig,
+      );
       break;
     }
     case "arrow":
@@ -340,7 +368,7 @@ const drawElementOnCanvas = (
 
       ShapeCache.generateElementShape(element, renderConfig).forEach(
         (shape) => {
-          rc.draw(shape);
+          drawShape(shape, element, rc, renderConfig);
         },
       );
       break;
@@ -822,7 +850,7 @@ export const renderElement = (
     case "text":
     case "iframe":
     case "embeddable": {
-      if (renderConfig.isExporting) {
+      if (renderConfig.isExporting || element.strokeStyle === "animated") {
         const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
         const centerX = (x1 + x2) / 2;
         const centerY = (y1 + y2) / 2;

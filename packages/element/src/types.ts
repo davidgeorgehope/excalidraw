@@ -25,7 +25,7 @@ export type GroupId = string;
 export type PointerType = "mouse" | "pen" | "touch";
 export type StrokeRoundness = "round" | "sharp";
 export type RoundnessType = ValueOf<typeof ROUNDNESS>;
-export type StrokeStyle = "solid" | "dashed" | "dotted";
+export type StrokeStyle = "solid" | "dashed" | "dotted" | "animated";
 export type TextAlign = typeof TEXT_ALIGN[keyof typeof TEXT_ALIGN];
 
 type VerticalAlignKeys = keyof typeof VERTICAL_ALIGN;

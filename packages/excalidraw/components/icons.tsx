@@ -1212,6 +1212,17 @@ export const StrokeStyleDashedIcon = createIcon(
   tablerIconProps,
 );
 
+export const StrokeStyleAnimatedIcon = createIcon(
+  <g strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M4 12h3" />
+    <path d="M10 12h3" />
+    <path d="M16 12h3" />
+    <path d="m17 9 3 3-3 3" />
+  </g>,
+  tablerIconProps,
+);
+
 // tabler-icons: line-dotted
 export const StrokeStyleDottedIcon = createIcon(
   <g strokeWidth="2">

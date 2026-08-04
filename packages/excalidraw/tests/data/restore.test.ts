@@ -43,6 +43,17 @@ describe("restoreElements", () => {
     expect(restoredElements.length).toBe(elements.length);
   });
 
+  it("restores animated stroke styles", () => {
+    const arrowElement = API.createElement({
+      type: "arrow",
+      strokeStyle: "animated",
+    });
+
+    const [restoredArrow] = restore.restoreElements([arrowElement], null);
+
+    expect(restoredArrow?.strokeStyle).toBe("animated");
+  });
+
   it("when imported data state is null it should return an empty array of elements", () => {
     const restoredElements = restore.restoreElements(null, null);
     expect(restoredElements.length).toBe(0);

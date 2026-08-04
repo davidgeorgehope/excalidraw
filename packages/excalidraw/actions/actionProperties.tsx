@@ -104,6 +104,7 @@ import {
   ArrowheadCircleIcon,
   ArrowheadTriangleIcon,
   ArrowheadNoneIcon,
+  StrokeStyleAnimatedIcon,
   StrokeStyleDashedIcon,
   StrokeStyleDottedIcon,
   TextAlignTopIcon,
@@ -816,6 +817,11 @@ export const actionChangeStrokeStyle = register<
               value: "dotted",
               text: t("labels.strokeStyle_dotted"),
               icon: StrokeStyleDottedIcon,
+            },
+            {
+              value: "animated",
+              text: t("labels.strokeStyle_animated"),
+              icon: StrokeStyleAnimatedIcon,
             },
           ]}
           value={getFormValue(
