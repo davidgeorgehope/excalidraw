@@ -22,6 +22,7 @@ import { actionToggleStats } from "../actions";
 import { trackEvent } from "../analytics";
 import { TunnelsContext, useInitializeTunnels } from "../context/tunnels";
 import { UIAppStateContext } from "../context/ui-appState";
+import { CursorWhiteboardPanel } from "../cursorWhiteboard/WhiteboardPanel";
 import { useAtom, useAtomValue } from "../editor-jotai";
 
 import { t } from "../i18n";
@@ -578,6 +579,9 @@ const LayerUI = ({
             })
           }
         />
+      )}
+      {defaultUIEnabled && !appState.viewModeEnabled && (
+        <CursorWhiteboardPanel app={app} />
       )}
       {editorInterface.formFactor === "phone" && (
         <MobileMenu

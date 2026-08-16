@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { KEYS, capitalizeString } from "@excalidraw/common";
 
 import { t } from "../i18n";
+import { startCursorWhiteboard } from "../cursorWhiteboard/run";
 
 import { useTunnels } from "../context/tunnels";
 
@@ -32,6 +33,7 @@ import {
   drawShapeToolIcon,
   mermaidLogoIcon,
   MagicIcon,
+  usersIcon,
 } from "./icons";
 
 import "./ToolIcon.scss";
@@ -318,6 +320,13 @@ export const MobileToolbar = ({ app, setAppState }: MobileToolbarProps) => {
             data-testid="toolbar-embeddable"
           >
             {t("toolBar.mermaidToExcalidraw")}
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={() => startCursorWhiteboard({ app, board: "effort" })}
+            icon={usersIcon}
+            data-testid="toolbar-cursor-whiteboard"
+          >
+            {t("toolBar.cursorWhiteboard")}
           </DropdownMenu.Item>
           {app.props.aiEnabled !== false && app.plugins.diagramToCode && (
             <>

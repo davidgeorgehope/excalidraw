@@ -4,6 +4,7 @@ import { useState } from "react";
 import { KEYS } from "@excalidraw/common";
 
 import { useTunnels } from "../context/tunnels";
+import { startCursorWhiteboard } from "../cursorWhiteboard/run";
 import { t } from "../i18n";
 
 import { useEditorInterface, useStylesPanelMode } from "./App";
@@ -22,6 +23,7 @@ import {
   MagicIcon,
   mermaidLogoIcon,
   DotsIcon,
+  usersIcon,
 } from "./icons";
 import {
   ArrowToolButton,
@@ -168,6 +170,13 @@ const ExtraToolsDropdown = ({
           data-testid="toolbar-embeddable"
         >
           {t("toolBar.mermaidToExcalidraw")}
+        </DropdownMenu.Item>
+        <DropdownMenu.Item
+          onSelect={() => startCursorWhiteboard({ app, board: "effort" })}
+          icon={usersIcon}
+          data-testid="toolbar-cursor-whiteboard"
+        >
+          {t("toolBar.cursorWhiteboard")}
         </DropdownMenu.Item>
         {app.props.aiEnabled !== false && app.plugins.diagramToCode && (
           <DropdownMenu.Item

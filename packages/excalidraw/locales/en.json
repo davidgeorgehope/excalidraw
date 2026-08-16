@@ -336,7 +336,18 @@
     "hand": "Hand (panning tool)",
     "extraTools": "More tools",
     "mermaidToExcalidraw": "Mermaid to Excalidraw",
-    "convertElementType": "Toggle shape type"
+    "convertElementType": "Toggle shape type",
+    "cursorWhiteboard": "Cursor Whiteboard",
+    "spawnAgents": "Spawn agents"
+  },
+  "cursorWhiteboard": {
+    "menu": "Cursor Whiteboard",
+    "spawn": "Spawn agents",
+    "effort": "1 Effort",
+    "sdlc": "2 Factory",
+    "maturity": "3 Maturity",
+    "platform": "4 Platform",
+    "drawing": "Agents drawing"
   },
   "element": {
     "rectangle": "Rectangle",
