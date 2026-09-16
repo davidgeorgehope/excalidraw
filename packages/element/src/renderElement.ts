@@ -63,6 +63,12 @@ import {
   isMagicFrameElement,
   isImageElement,
 } from "./typeChecks";
+import {
+  applyAnimatedStrokeOptions,
+  restoreAnimatedStrokeOptions,
+  shouldStrokeAnimatedClosedOutline,
+  strokeAnimatedClosedOutline,
+} from "./animatedStroke";
 import { getContainingFrame } from "./frame";
 import { getCornerRadius } from "./utils";
 
@@ -322,20 +328,13 @@ const drawShape = (
   rc: RoughCanvas,
   renderConfig: StaticCanvasRenderConfig,
 ) => {
-  const previousDashOffset = shape.options.strokeLineDashOffset;
-  if (
-    element.strokeStyle === "animated" &&
-    !renderConfig.isExporting &&
-    shape.options.strokeLineDash
-  ) {
-    shape.options.strokeLineDashOffset = -performance.now() / 40;
-  }
+  const snapshot = applyAnimatedStrokeOptions(
+    shape,
+    element,
+    renderConfig.isExporting,
+  );
   rc.draw(shape);
-  if (previousDashOffset === undefined) {
-    delete shape.options.strokeLineDashOffset;
-  } else {
-    shape.options.strokeLineDashOffset = previousDashOffset;
-  }
+  restoreAnimatedStrokeOptions(shape, snapshot);
 };
 
 const drawElementOnCanvas = (
@@ -359,6 +358,9 @@ const drawElementOnCanvas = (
         rc,
         renderConfig,
       );
+      if (shouldStrokeAnimatedClosedOutline(element, renderConfig.isExporting)) {
+        strokeAnimatedClosedOutline(context, element, renderConfig.theme);
+      }
       break;
     }
     case "arrow":

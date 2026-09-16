@@ -57,6 +57,7 @@ import {
 import { getCornerRadius, isPathALoop } from "./utils";
 import { headingForPointIsHorizontal } from "./heading";
 
+import { getDashArrayDashed, getDashArrayDotted } from "./animatedStroke";
 import { canChangeRoundness } from "./comparisons";
 import {
   elementCenterPoint,
@@ -163,10 +164,6 @@ export class ShapeCache {
     return shape;
   };
 }
-
-const getDashArrayDashed = (strokeWidth: number) => [8, 8 + strokeWidth];
-
-const getDashArrayDotted = (strokeWidth: number) => [1.5, 6 + strokeWidth];
 
 function adjustRoughness(element: ExcalidrawElement): number {
   const roughness = element.roughness;

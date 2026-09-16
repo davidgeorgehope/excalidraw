@@ -103,6 +103,8 @@ describe("actionStyles", () => {
 
     fireEvent.click(screen.getByTitle("Animated"));
 
-    expect(API.getSelectedElement().strokeStyle).toBe("animated");
+    const rectangle = API.getSelectedElement();
+    expect(rectangle.strokeStyle).toBe("animated");
+    expect(rectangle.type).toBe("rectangle");
   });
 });
