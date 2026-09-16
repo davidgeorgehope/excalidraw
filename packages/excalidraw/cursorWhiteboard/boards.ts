@@ -27,6 +27,33 @@ const boxStyle = (backgroundColor: string) =>
     strokeWidth: 2,
   } as const);
 
+const containerBox = ({
+  id,
+  x,
+  y,
+  width,
+  height,
+}: {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}): ExcalidrawElementSkeleton => ({
+  type: "rectangle",
+  id,
+  x,
+  y,
+  width,
+  height,
+  strokeColor: ACCENT,
+  backgroundColor: FILLS.gray,
+  fillStyle: "solid",
+  roughness: 1,
+  strokeStyle: "dashed",
+  strokeWidth: 2,
+});
+
 const labeledBox = ({
   id,
   x,
@@ -220,19 +247,32 @@ const buildInvestigateBoard = (
       y: origin.y,
       text: "3 · Investigate inside the boundary",
     }),
-    labeledBox({
-      id: "private-worker",
+    containerBox({
+      id: "network-boundary",
       x: origin.x,
       y,
-      width: 250,
-      height: 120,
+      width: 970,
+      height: 280,
+    }),
+    titleText({
+      x: origin.x + 30,
+      y: y + 20,
+      text: "Iterable private network · private endpoints stay private",
+      fontSize: BODY_SIZE,
+    }),
+    labeledBox({
+      id: "private-worker",
+      x: origin.x + 30,
+      y: y + 95,
+      width: 240,
+      height: 110,
       text: "Private Worker",
       fill: FILLS.blue,
     }),
     boundArrow({
       id: "worker-to-backstage",
-      x: origin.x + 250,
-      y: y + 45,
+      x: origin.x + 270,
+      y: y + 130,
       startId: "private-worker",
       endId: "backstage",
       strokeColor: ACCENT,
@@ -240,17 +280,17 @@ const buildInvestigateBoard = (
     }),
     labeledBox({
       id: "backstage",
-      x: origin.x + 370,
-      y: y - 30,
-      width: 240,
-      height: 95,
+      x: origin.x + 390,
+      y: y + 75,
+      width: 220,
+      height: 80,
       text: "Backstage",
       fill: FILLS.yellow,
     }),
     boundArrow({
       id: "worker-to-k8s",
-      x: origin.x + 250,
-      y: y + 75,
+      x: origin.x + 270,
+      y: y + 170,
       startId: "private-worker",
       endId: "kubernetes",
       strokeColor: ACCENT,
@@ -258,21 +298,21 @@ const buildInvestigateBoard = (
     }),
     labeledBox({
       id: "kubernetes",
-      x: origin.x + 370,
-      y: y + 95,
-      width: 240,
-      height: 95,
+      x: origin.x + 390,
+      y: y + 175,
+      width: 220,
+      height: 80,
       text: "Kubernetes",
       fill: FILLS.green,
     }),
     labeledBox({
-      id: "network-boundary",
+      id: "governed-access",
       x: origin.x + 680,
-      y: y - 30,
-      width: 290,
-      height: 220,
-      text: "Iterable network\nPrivate endpoints stay private",
-      fill: FILLS.gray,
+      y: y + 95,
+      width: 250,
+      height: 110,
+      text: "Approved MCP tools\nNo PII access",
+      fill: FILLS.violet,
       fontSize: 18,
     }),
   ];

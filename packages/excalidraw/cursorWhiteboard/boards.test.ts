@@ -78,9 +78,27 @@ describe("cursor whiteboard boards", () => {
         "Private Worker",
         "Backstage",
         "Kubernetes",
-        "Iterable network\nPrivate endpoints stay private",
+        "Iterable private network · private endpoints stay private",
+        "Approved MCP tools\nNo PII access",
       ]),
     );
+    const boundary = investigate.find((element) =>
+      element.id.endsWith("network-boundary"),
+    );
+    const internalSystems = investigate.filter(
+      (element) =>
+        element.id.endsWith("backstage") ||
+        element.id.endsWith("kubernetes") ||
+        element.id.endsWith("governed-access"),
+    );
+    expect(boundary?.type).toBe("rectangle");
+    expect(internalSystems).toHaveLength(3);
+    for (const system of internalSystems) {
+      expect(system.x).toBeGreaterThan(boundary?.x ?? Number.POSITIVE_INFINITY);
+      expect(system.x + system.width).toBeLessThan(
+        (boundary?.x ?? 0) + (boundary?.width ?? 0),
+      );
+    }
     expect(textOf(remediate)).toEqual(
       expect.arrayContaining([
         "Root cause",

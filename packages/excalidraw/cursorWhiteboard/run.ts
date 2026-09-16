@@ -19,6 +19,11 @@ const MOVE_MS = 320;
 const DRAW_MS = 480;
 const FADE_MS = 700;
 const STAGGER_MS = 280;
+const GHOST_AGENT_NAMES = [
+  "Triage Agent",
+  "Platform Agent",
+  "Review Agent",
+] as const;
 
 let nextRunId = 0;
 
@@ -107,6 +112,7 @@ const publishGhosts = ({
 
     const shake = wobble({ now, seed: index * 2.3 });
     const collaborator: Collaborator = {
+      username: GHOST_AGENT_NAMES[index],
       pointer: {
         x: agent.x + shake.x,
         y: agent.y + shake.y,
