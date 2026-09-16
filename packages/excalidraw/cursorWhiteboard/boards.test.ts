@@ -87,9 +87,10 @@ describe("cursor whiteboard boards", () => {
     );
     const internalSystems = investigate.filter(
       (element) =>
-        element.id.endsWith("backstage") ||
-        element.id.endsWith("kubernetes") ||
-        element.id.endsWith("governed-access"),
+        element.type === "rectangle" &&
+        (element.id.endsWith("backstage") ||
+          element.id.endsWith("kubernetes") ||
+          element.id.endsWith("governed-access")),
     );
     expect(boundary?.type).toBe("rectangle");
     expect(internalSystems).toHaveLength(3);
