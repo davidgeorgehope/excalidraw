@@ -336,7 +336,18 @@
     "hand": "Hand (panning tool)",
     "extraTools": "More tools",
     "mermaidToExcalidraw": "Mermaid to Excalidraw",
-    "convertElementType": "Toggle shape type"
+    "convertElementType": "Toggle shape type",
+    "cursorWhiteboard": "Iterable AIOps",
+    "spawnAgents": "Spawn agents"
+  },
+  "cursorWhiteboard": {
+    "menu": "Iterable AIOps",
+    "spawn": "Spawn agents",
+    "incident": "1 Incident",
+    "dispatch": "2 Dispatch",
+    "investigate": "3 Investigate",
+    "remediate": "4 Remediate",
+    "drawing": "Agents drawing"
   },
   "element": {
     "rectangle": "Rectangle",
