@@ -86,6 +86,7 @@ const boundArrow = ({
   startId,
   endId,
   strokeColor = STROKE,
+  animated = false,
 }: {
   id: string;
   x: number;
@@ -93,211 +94,234 @@ const boundArrow = ({
   startId: string;
   endId: string;
   strokeColor?: string;
+  animated?: boolean;
 }): ExcalidrawElementSkeleton => ({
   type: "arrow",
   id,
   x,
   y,
   strokeColor,
+  strokeStyle: animated ? "animated" : "solid",
   strokeWidth: 2,
   roughness: 1,
   start: { id: startId, type: "rectangle" },
   end: { id: endId, type: "rectangle" },
 });
 
-const buildEffortBoard = (origin: ScenePoint): ExcalidrawElementSkeleton[] => {
-  const boxWidth = 220;
-  const boxHeight = 130;
-  const gap = 24;
-  const boxesY = origin.y + 70;
-  const labels = [
-    { id: "ktlo", text: "KTLO", fill: FILLS.rose },
-    { id: "refactor", text: "Refactor", fill: FILLS.yellow },
-    { id: "products", text: "New products", fill: FILLS.green },
-    { id: "moonshot", text: "R&D / moonshot", fill: FILLS.blue },
-  ] as const;
-
+const buildIncidentBoard = (
+  origin: ScenePoint,
+): ExcalidrawElementSkeleton[] => {
+  const y = origin.y + 90;
   return [
-    titleText({
+    titleText({ x: origin.x, y: origin.y, text: "1 · Detect the signal" }),
+    labeledBox({
+      id: "datadog-alert",
       x: origin.x,
-      y: origin.y,
-      text: "Where is effort going?",
+      y,
+      width: 260,
+      height: 120,
+      text: "Datadog\nproduction alert",
+      fill: FILLS.rose,
     }),
-    ...labels.map((item, index) =>
-      labeledBox({
-        id: item.id,
-        x: origin.x + index * (boxWidth + gap),
-        y: boxesY,
-        width: boxWidth,
-        height: boxHeight,
-        text: item.text,
-        fill: item.fill,
-      }),
-    ),
+    boundArrow({
+      id: "alert-to-slack",
+      x: origin.x + 260,
+      y: y + 60,
+      startId: "datadog-alert",
+      endId: "incident-channel",
+      strokeColor: ACCENT,
+      animated: true,
+    }),
+    labeledBox({
+      id: "incident-channel",
+      x: origin.x + 360,
+      y,
+      width: 280,
+      height: 120,
+      text: "Slack\n#incidents",
+      fill: FILLS.violet,
+    }),
     titleText({
       x: origin.x,
-      y: boxesY + boxHeight + 28,
-      text: "If we freed capacity, where does it go?",
+      y: y + 160,
+      text: "The incident thread becomes the shared source of truth.",
       fontSize: BODY_SIZE,
     }),
   ];
 };
 
-const buildSdlcBoard = (origin: ScenePoint): ExcalidrawElementSkeleton[] => {
-  const stages = [
-    { id: "plan", text: "Plan", fill: FILLS.gray },
-    { id: "design", text: "Design", fill: FILLS.gray },
-    { id: "write", text: "Write", fill: FILLS.orange },
-    { id: "review", text: "Review", fill: FILLS.rose },
-    { id: "test", text: "Test", fill: FILLS.rose },
-    { id: "deploy", text: "Deploy", fill: FILLS.green },
-  ] as const;
-  const boxWidth = 130;
-  const boxHeight = 72;
-  const gap = 36;
-  const boxesY = origin.y + 70;
-  const gitY = boxesY + boxHeight + 56;
-  const span = stages.length * boxWidth + (stages.length - 1) * gap;
-
-  const boxes = stages.map((stage, index) =>
-    labeledBox({
-      id: stage.id,
-      x: origin.x + index * (boxWidth + gap),
-      y: boxesY,
-      width: boxWidth,
-      height: boxHeight,
-      text: stage.text,
-      fill: stage.fill,
-    }),
-  );
-
-  const arrows = stages.slice(0, -1).map((stage, index) => {
-    const next = stages[index + 1];
-    return boundArrow({
-      id: `arrow-${stage.id}-${next.id}`,
-      x: origin.x + (index + 1) * (boxWidth + gap) - gap,
-      y: boxesY + boxHeight / 2,
-      startId: stage.id,
-      endId: next.id,
-    });
-  });
-
+const buildDispatchBoard = (
+  origin: ScenePoint,
+): ExcalidrawElementSkeleton[] => {
+  const y = origin.y + 90;
   return [
-    titleText({
-      x: origin.x,
-      y: origin.y,
-      text: "The bottleneck moves",
-    }),
-    ...boxes,
-    ...arrows,
+    titleText({ x: origin.x, y: origin.y, text: "2 · Dispatch with identity" }),
     labeledBox({
-      id: "git",
+      id: "slack-trigger",
       x: origin.x,
-      y: gitY,
-      width: span,
-      height: 52,
-      text: "Git",
+      y,
+      width: 220,
+      height: 110,
+      text: "Slack trigger",
       fill: FILLS.violet,
     }),
-    {
-      type: "text",
-      x: origin.x + 2 * (boxWidth + gap),
-      y: boxesY - 36,
-      text: "AI compresses Write",
-      fontSize: 16,
+    boundArrow({
+      id: "trigger-to-agent",
+      x: origin.x + 220,
+      y: y + 55,
+      startId: "slack-trigger",
+      endId: "cloud-agent",
       strokeColor: ACCENT,
-    },
-    {
-      type: "text",
-      x: origin.x + 3 * (boxWidth + gap),
-      y: gitY + 64,
-      text: "Bottleneck slides into Review / Test",
-      fontSize: 16,
+      animated: true,
+    }),
+    labeledBox({
+      id: "cloud-agent",
+      x: origin.x + 320,
+      y,
+      width: 250,
+      height: 110,
+      text: "Cursor Cloud Agent",
+      fill: FILLS.orange,
+    }),
+    boundArrow({
+      id: "agent-to-worker",
+      x: origin.x + 570,
+      y: y + 55,
+      startId: "cloud-agent",
+      endId: "private-worker",
       strokeColor: ACCENT,
-    },
+      animated: true,
+    }),
+    labeledBox({
+      id: "private-worker",
+      x: origin.x + 670,
+      y,
+      width: 280,
+      height: 110,
+      text: "Private Worker\ninside Iterable",
+      fill: FILLS.blue,
+    }),
+    titleText({
+      x: origin.x + 320,
+      y: y + 145,
+      text: "Runs with the initiating user's identity",
+      fontSize: BODY_SIZE,
+    }),
   ];
 };
 
-const buildMaturityBoard = (
+const buildInvestigateBoard = (
   origin: ScenePoint,
 ): ExcalidrawElementSkeleton[] => {
-  const stages = [
-    { id: "assisted", text: "AI-assisted", fill: FILLS.gray },
-    { id: "sync", text: "Agents sync", fill: FILLS.yellow },
-    { id: "async", text: "Cloud agents async", fill: FILLS.orange },
-    { id: "factory", text: "AI software factory", fill: FILLS.green },
-  ] as const;
-  const boxWidth = 210;
-  const boxHeight = 110;
-  const gap = 40;
-  const boxesY = origin.y + 80;
-
-  const boxes = stages.map((stage, index) =>
+  const y = origin.y + 90;
+  return [
+    titleText({
+      x: origin.x,
+      y: origin.y,
+      text: "3 · Investigate inside the boundary",
+    }),
     labeledBox({
-      id: stage.id,
-      x: origin.x + index * (boxWidth + gap),
-      y: boxesY - index * 12,
-      width: boxWidth,
-      height: boxHeight + index * 8,
-      text: stage.text,
-      fill: stage.fill,
+      id: "private-worker",
+      x: origin.x,
+      y,
+      width: 250,
+      height: 120,
+      text: "Private Worker",
+      fill: FILLS.blue,
+    }),
+    boundArrow({
+      id: "worker-to-backstage",
+      x: origin.x + 250,
+      y: y + 45,
+      startId: "private-worker",
+      endId: "backstage",
+      strokeColor: ACCENT,
+      animated: true,
+    }),
+    labeledBox({
+      id: "backstage",
+      x: origin.x + 370,
+      y: y - 30,
+      width: 240,
+      height: 95,
+      text: "Backstage",
+      fill: FILLS.yellow,
+    }),
+    boundArrow({
+      id: "worker-to-k8s",
+      x: origin.x + 250,
+      y: y + 75,
+      startId: "private-worker",
+      endId: "kubernetes",
+      strokeColor: ACCENT,
+      animated: true,
+    }),
+    labeledBox({
+      id: "kubernetes",
+      x: origin.x + 370,
+      y: y + 95,
+      width: 240,
+      height: 95,
+      text: "Kubernetes",
+      fill: FILLS.green,
+    }),
+    labeledBox({
+      id: "network-boundary",
+      x: origin.x + 680,
+      y: y - 30,
+      width: 290,
+      height: 220,
+      text: "Iterable network\nPrivate endpoints stay private",
+      fill: FILLS.gray,
       fontSize: 18,
     }),
-  );
-
-  const arrows = stages.slice(0, -1).map((stage, index) => {
-    const next = stages[index + 1];
-    return boundArrow({
-      id: `arrow-${stage.id}-${next.id}`,
-      x: origin.x + (index + 1) * (boxWidth + gap) - gap,
-      y: boxesY + boxHeight / 2,
-      startId: stage.id,
-      endId: next.id,
-    });
-  });
-
-  return [
-    titleText({
-      x: origin.x,
-      y: origin.y,
-      text: "AI maturity",
-    }),
-    ...boxes,
-    ...arrows,
   ];
 };
 
-const buildPlatformBoard = (
+const buildRemediateBoard = (
   origin: ScenePoint,
 ): ExcalidrawElementSkeleton[] => {
-  const pillars = [
-    { id: "agnostic", text: "Agnostic", fill: FILLS.blue },
-    { id: "enterprise", text: "Enterprise", fill: FILLS.violet },
-    { id: "platform", text: "Platform", fill: FILLS.orange },
+  const y = origin.y + 90;
+  const stages = [
+    { id: "root-cause", text: "Root cause", fill: FILLS.yellow },
+    { id: "fix", text: "Proposed fix", fill: FILLS.orange },
+    { id: "pull-request", text: "Open PR", fill: FILLS.green },
+    { id: "human-review", text: "Human review", fill: FILLS.blue },
   ] as const;
-  const boxWidth = 260;
-  const boxHeight = 150;
-  const gap = 32;
-  const boxesY = origin.y + 70;
+  const boxWidth = 190;
+  const gap = 55;
 
   return [
-    titleText({
-      x: origin.x,
-      y: origin.y,
-      text: "Why Cursor",
-    }),
-    ...pillars.map((pillar, index) =>
+    titleText({ x: origin.x, y: origin.y, text: "4 · Remediate with control" }),
+    ...stages.map((stage, index) =>
       labeledBox({
-        id: pillar.id,
+        id: stage.id,
         x: origin.x + index * (boxWidth + gap),
-        y: boxesY,
+        y,
         width: boxWidth,
-        height: boxHeight,
-        text: pillar.text,
-        fill: pillar.fill,
-        fontSize: 22,
+        height: 105,
+        text: stage.text,
+        fill: stage.fill,
+        fontSize: 18,
       }),
     ),
+    ...stages.slice(0, -1).map((stage, index) =>
+      boundArrow({
+        id: `arrow-${stage.id}-${stages[index + 1].id}`,
+        x: origin.x + (index + 1) * (boxWidth + gap) - gap,
+        y: y + 52,
+        startId: stage.id,
+        endId: stages[index + 1].id,
+        strokeColor: ACCENT,
+        animated: true,
+      }),
+    ),
+    titleText({
+      x: origin.x,
+      y: y + 145,
+      text: "Agent speed. Existing review and deployment controls.",
+      fontSize: BODY_SIZE,
+    }),
   ];
 };
 
@@ -348,14 +372,14 @@ export const buildBoardSkeletons = ({
 }): ExcalidrawElementSkeleton[] => {
   const skeletons = (() => {
     switch (board) {
-      case "effort":
-        return buildEffortBoard(origin);
-      case "sdlc":
-        return buildSdlcBoard(origin);
-      case "maturity":
-        return buildMaturityBoard(origin);
-      case "platform":
-        return buildPlatformBoard(origin);
+      case "incident":
+        return buildIncidentBoard(origin);
+      case "dispatch":
+        return buildDispatchBoard(origin);
+      case "investigate":
+        return buildInvestigateBoard(origin);
+      case "remediate":
+        return buildRemediateBoard(origin);
       default: {
         const _exhaustive: never = board;
         return _exhaustive;
@@ -368,14 +392,14 @@ export const buildBoardSkeletons = ({
 
 export const boardTitle = (board: BoardKind): string => {
   switch (board) {
-    case "effort":
-      return "Where is effort going?";
-    case "sdlc":
-      return "The bottleneck moves";
-    case "maturity":
-      return "AI maturity";
-    case "platform":
-      return "Why Cursor";
+    case "incident":
+      return "Detect the signal";
+    case "dispatch":
+      return "Dispatch with identity";
+    case "investigate":
+      return "Investigate inside the boundary";
+    case "remediate":
+      return "Remediate with control";
     default: {
       const _exhaustive: never = board;
       return _exhaustive;

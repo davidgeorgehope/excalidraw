@@ -1,4 +1,9 @@
-export const BOARD_KINDS = ["effort", "sdlc", "maturity", "platform"] as const;
+export const BOARD_KINDS = [
+  "incident",
+  "dispatch",
+  "investigate",
+  "remediate",
+] as const;
 
 export type BoardKind = typeof BOARD_KINDS[number];
 
@@ -52,9 +57,9 @@ export type AgentRuntime = {
 
 export const isBoardKind = (value: unknown): value is BoardKind => {
   return (
-    value === "effort" ||
-    value === "sdlc" ||
-    value === "maturity" ||
-    value === "platform"
+    value === "incident" ||
+    value === "dispatch" ||
+    value === "investigate" ||
+    value === "remediate"
   );
 };

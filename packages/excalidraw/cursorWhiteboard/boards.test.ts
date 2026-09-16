@@ -9,11 +9,11 @@ const textOf = (elements: readonly { type: string; text?: string }[]) =>
     .map((element) => element.text ?? "");
 
 describe("cursor whiteboard boards", () => {
-  it("builds effort with the four investment buckets", () => {
+  it("builds the incident signal flow with an animated alert", () => {
     const origin = nextBoardOrigin({ runId: 0 });
     const elements = convertToExcalidrawElements(
       buildBoardSkeletons({
-        board: "effort",
+        board: "incident",
         origin,
         runId: 0,
       }),
@@ -21,19 +21,22 @@ describe("cursor whiteboard boards", () => {
     );
 
     const labels = textOf(elements);
-    expect(labels).toContain("Where is effort going?");
-    expect(labels).toContain("KTLO");
-    expect(labels).toContain("Refactor");
-    expect(labels).toContain("New products");
-    expect(labels).toContain("R&D / moonshot");
-    expect(labels).toContain("If we freed capacity, where does it go?");
+    expect(labels).toContain("1 · Detect the signal");
+    expect(labels).toContain("Datadog\nproduction alert");
+    expect(labels).toContain("Slack\n#incidents");
     expect(elements.some((element) => element.type === "rectangle")).toBe(true);
+    expect(
+      elements.some(
+        (element) =>
+          element.type === "arrow" && element.strokeStyle === "animated",
+      ),
+    ).toBe(true);
   });
 
-  it("builds sdlc with git under the line and the write callout", () => {
+  it("builds dispatch from Slack to an Iterable private worker", () => {
     const elements = convertToExcalidrawElements(
       buildBoardSkeletons({
-        board: "sdlc",
+        board: "dispatch",
         origin: nextBoardOrigin({ runId: 1 }),
         runId: 1,
       }),
@@ -42,49 +45,49 @@ describe("cursor whiteboard boards", () => {
     const labels = textOf(elements);
     expect(labels).toEqual(
       expect.arrayContaining([
-        "The bottleneck moves",
-        "Plan",
-        "Design",
-        "Write",
-        "Review",
-        "Test",
-        "Deploy",
-        "Git",
-        "AI compresses Write",
-        "Bottleneck slides into Review / Test",
+        "2 · Dispatch with identity",
+        "Slack trigger",
+        "Cursor Cloud Agent",
+        "Private Worker\ninside Iterable",
+        "Runs with the initiating user's identity",
       ]),
     );
     expect(elements.some((element) => element.type === "arrow")).toBe(true);
   });
 
-  it("builds maturity and platform boards", () => {
-    const maturity = convertToExcalidrawElements(
+  it("builds investigation and remediation boards", () => {
+    const investigate = convertToExcalidrawElements(
       buildBoardSkeletons({
-        board: "maturity",
+        board: "investigate",
         origin: nextBoardOrigin({ runId: 2 }),
         runId: 2,
       }),
       { regenerateIds: false },
     );
-    const platform = convertToExcalidrawElements(
+    const remediate = convertToExcalidrawElements(
       buildBoardSkeletons({
-        board: "platform",
+        board: "remediate",
         origin: nextBoardOrigin({ runId: 3 }),
         runId: 3,
       }),
       { regenerateIds: false },
     );
 
-    expect(textOf(maturity)).toEqual(
+    expect(textOf(investigate)).toEqual(
       expect.arrayContaining([
-        "AI-assisted",
-        "Agents sync",
-        "Cloud agents async",
-        "AI software factory",
+        "Private Worker",
+        "Backstage",
+        "Kubernetes",
+        "Iterable network\nPrivate endpoints stay private",
       ]),
     );
-    expect(textOf(platform)).toEqual(
-      expect.arrayContaining(["Agnostic", "Enterprise", "Platform"]),
+    expect(textOf(remediate)).toEqual(
+      expect.arrayContaining([
+        "Root cause",
+        "Proposed fix",
+        "Open PR",
+        "Human review",
+      ]),
     );
   });
 
@@ -95,11 +98,11 @@ describe("cursor whiteboard boards", () => {
     expect(second.y).toBeGreaterThan(first.y);
 
     const a = convertToExcalidrawElements(
-      buildBoardSkeletons({ board: "effort", origin: first, runId: 0 }),
+      buildBoardSkeletons({ board: "incident", origin: first, runId: 0 }),
       { regenerateIds: false },
     );
     const b = convertToExcalidrawElements(
-      buildBoardSkeletons({ board: "effort", origin: second, runId: 1 }),
+      buildBoardSkeletons({ board: "incident", origin: second, runId: 1 }),
       { regenerateIds: false },
     );
     const firstBox = a.find((element) => element.type === "rectangle");

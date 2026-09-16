@@ -28,12 +28,12 @@ describe("cursor whiteboard", () => {
       '[data-testid="toolbar-cursor-whiteboard"]',
     );
     expect(item).not.toBeNull();
-    expect(item?.textContent).toMatch(/Cursor Whiteboard/i);
+    expect(item?.textContent).toMatch(/Iterable AIOps/i);
 
     act(() => {
       startCursorWhiteboard({
         app: window.h.app,
-        board: "effort",
+        board: "incident",
         instant: true,
       });
     });
@@ -41,8 +41,8 @@ describe("cursor whiteboard", () => {
     const texts = window.h.elements
       .filter((element) => element.type === "text")
       .map((element) => ("text" in element ? element.text : ""));
-    expect(texts).toContain("Where is effort going?");
-    expect(texts).toContain("KTLO");
+    expect(texts).toContain("1 · Detect the signal");
+    expect(texts).toContain("Datadog\nproduction alert");
     expect(
       window.h.elements.some((element) => element.type === "rectangle"),
     ).toBe(true);
@@ -55,14 +55,14 @@ describe("cursor whiteboard", () => {
     act(() => {
       startCursorWhiteboard({
         app: window.h.app,
-        board: "effort",
+        board: "incident",
         instant: true,
       });
     });
     act(() => {
       startCursorWhiteboard({
         app: window.h.app,
-        board: "sdlc",
+        board: "dispatch",
         instant: true,
       });
     });
@@ -70,9 +70,9 @@ describe("cursor whiteboard", () => {
     const texts = window.h.elements
       .filter((element) => element.type === "text")
       .map((element) => ("text" in element ? element.text : ""));
-    expect(texts).toContain("Where is effort going?");
-    expect(texts).toContain("The bottleneck moves");
-    expect(texts).toContain("Git");
+    expect(texts).toContain("1 · Detect the signal");
+    expect(texts).toContain("2 · Dispatch with identity");
+    expect(texts).toContain("Private Worker\ninside Iterable");
 
     const boxes = window.h.elements.filter(
       (element) => element.type === "rectangle",
@@ -100,19 +100,19 @@ describe("cursor whiteboard", () => {
     act(() => {
       startCursorWhiteboard({
         app: window.h.app,
-        board: "effort",
+        board: "incident",
         instant: true,
       });
     });
 
     expect(
-      document.querySelector('[data-testid="cursor-whiteboard-sdlc"]'),
+      document.querySelector('[data-testid="cursor-whiteboard-dispatch"]'),
     ).not.toBeNull();
     expect(
-      document.querySelector('[data-testid="cursor-whiteboard-maturity"]'),
+      document.querySelector('[data-testid="cursor-whiteboard-investigate"]'),
     ).not.toBeNull();
     expect(
-      document.querySelector('[data-testid="cursor-whiteboard-platform"]'),
+      document.querySelector('[data-testid="cursor-whiteboard-remediate"]'),
     ).not.toBeNull();
   });
 });

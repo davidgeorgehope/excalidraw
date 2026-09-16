@@ -322,7 +322,7 @@ export const MobileToolbar = ({ app, setAppState }: MobileToolbarProps) => {
             {t("toolBar.mermaidToExcalidraw")}
           </DropdownMenu.Item>
           <DropdownMenu.Item
-            onSelect={() => startCursorWhiteboard({ app, board: "effort" })}
+            onSelect={() => startCursorWhiteboard({ app, board: "incident" })}
             icon={usersIcon}
             data-testid="toolbar-cursor-whiteboard"
           >
