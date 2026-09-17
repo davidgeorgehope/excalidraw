@@ -2157,6 +2157,25 @@ class App extends React.Component<AppProps, AppState> {
         return null;
       }
 
+      const isEditing = f.id === this.state.editingFrame;
+      const isSelected = this.state.selectedElementIds[f.id] === true;
+      const isFocusedSearchMatch =
+        focusedSearchMatch?.id === f.id && !!focusedSearchMatch?.focus;
+
+      // The frame the user is focused on stays fully readable (no clipping),
+      // so its name is legible even when the frame is small on screen.
+      const keepFullyReadable = isEditing || isSelected || isFocusedSearchMatch;
+
+      // On-screen width of the frame. The label is a constant-size HUD, so a
+      // zoomed-out frame emits a 14px label regardless of how tiny it is.
+      const frameCssWidth = f.width * this.state.zoom.value;
+
+      // Declutter when zoomed out: drop labels for frames too small on screen
+      // to show a legible word, unless it's the one the user cares about.
+      if (!keepFullyReadable && frameCssWidth < FRAME_STYLE.nameFontSize * 3) {
+        return null;
+      }
+
       const { x: x1, y: y1 } = sceneCoordsToViewportCoords(
         { sceneX: f.x, sceneY: f.y },
         this.state,
@@ -2249,10 +2268,7 @@ class App extends React.Component<AppProps, AppState> {
               : FRAME_STYLE.nameColorLightTheme,
             lineHeight: FRAME_STYLE.nameLineHeight,
             width: "max-content",
-            maxWidth:
-              focusedSearchMatch?.id === f.id && focusedSearchMatch?.focus
-                ? "none"
-                : `${f.width * this.state.zoom.value}px`,
+            maxWidth: keepFullyReadable ? "none" : `${frameCssWidth}px`,
             overflow: f.id === this.state.editingFrame ? "visible" : "hidden",
             whiteSpace: "nowrap",
             textOverflow: "ellipsis",
