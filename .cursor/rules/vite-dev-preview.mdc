@@ -1,0 +1,10 @@
+---
+description: Local Vite preview — Cursor browser and restart when UI doesn’t update
+alwaysApply: true
+---
+
+# Vite dev preview
+
+- Start the app with `yarn start` (Vite, typically http://localhost:3001).
+- Open the preview **inside Cursor** via `open_resource` with the localhost URL — do not use macOS `open` / an external browser unless the user asks.
+- After changing SCSS/CSS (or when the user says the UI didn’t update), **do not assume HMR worked**. Kill whatever is listening on the Vite port, restart `yarn start`, confirm the served CSS matches the file, then reopen the in-Cursor preview with `open_resource`.

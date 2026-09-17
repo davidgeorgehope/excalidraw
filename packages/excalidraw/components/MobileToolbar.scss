@@ -1,6 +1,11 @@
 @use "../css/variables.module" as *;
 
 .excalidraw {
+  // Island wraps .mobile-toolbar; override its surface so the full bar is green
+  .App-toolbar:has(.mobile-toolbar) {
+    --island-bg-color: green;
+  }
+
   .mobile-toolbar {
     display: flex;
     flex: 1;

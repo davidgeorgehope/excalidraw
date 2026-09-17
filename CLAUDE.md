@@ -19,10 +19,16 @@ Excalidraw is a **monorepo** with a clear separation between the core library an
 ## Development Commands
 
 ```bash
+yarn start           # Dev server (excalidraw-app Vite) — usually http://localhost:3001
 yarn test:typecheck  # TypeScript type checking
 yarn test:update     # Run all tests (with snapshot updates)
 yarn fix             # Auto-fix formatting and linting issues
 ```
+
+### Dev server / browser preview
+
+- Prefer opening the app **inside Cursor** (Simple Browser / workbench opener) rather than the system browser.
+- Vite HMR normally picks up SCSS/TS changes. If styles or UI don’t update after an edit, an old Vite process may still be holding the port — kill whatever is on that port and restart `yarn start`, then hard-refresh the preview.
 
 ## Architecture Notes
 
