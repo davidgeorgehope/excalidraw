@@ -13,6 +13,10 @@ Please add the latest change on the top under the correct section.
 
 ## Unreleased
 
+### Fixes
+
+- Animated stroke style now flows around closed shapes (rectangles, diamonds, ellipses). Roughjs draws each edge as its own subpath, so the dash pattern was restarting on every side and boxes looked static. Closed shapes now use a single continuous outline, and the dash array is applied at draw time even if a cached shape was generated without one.
+
 ## Excalidraw API
 
 ### Host-controlled active tool (2026-07-14) [#11665](https://github.com/excalidraw/excalidraw/pull/11665)
