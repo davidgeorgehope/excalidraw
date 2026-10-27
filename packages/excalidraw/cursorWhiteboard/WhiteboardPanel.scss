@@ -1,0 +1,55 @@
+.excalidraw {
+  .cursor-whiteboard-panel-host {
+    position: absolute;
+    left: 1rem;
+    bottom: 4.5rem;
+    z-index: 5;
+    pointer-events: var(--ui-pointerEvents);
+  }
+
+  .cursor-whiteboard-panel {
+    min-width: 220px;
+    max-width: 280px;
+    background: var(--island-bg-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .cursor-whiteboard-panel__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .cursor-whiteboard-panel__status {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-bottom: 0.4rem;
+  }
+
+  .cursor-whiteboard-panel__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .cursor-whiteboard-panel__button {
+    appearance: none;
+    border: 1px solid var(--default-border-color);
+    background: var(--button-gray-1);
+    color: var(--text-primary-color);
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.8rem;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .cursor-whiteboard-panel__button:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  .cursor-whiteboard-panel__button:not(:disabled):hover {
+    background: var(--button-gray-2);
+  }
+}
